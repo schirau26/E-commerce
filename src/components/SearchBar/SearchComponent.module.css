@@ -1,0 +1,89 @@
+.root {
+  width: 140px;
+  min-width: 120px;
+  flex-shrink: 0;
+}
+
+.dialogRoot {
+  width: 100%;
+}
+
+.dialogPanel {
+  background: #fff;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.inlineResults {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.inlineList {
+  position: relative !important;
+  width: 100% !important;
+  max-height: min(50vh, 320px);
+  overflow-y: auto;
+  box-shadow: none !important;
+}
+
+.control {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  background: #111;
+  border-radius: 8px;
+  padding: 0 12px;
+  height: 36px;
+  color: #fff;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.icon {
+  flex-shrink: 0;
+  color: #fff;
+  opacity: 0.85;
+}
+
+.input,
+.control :global(input) {
+  flex: 1;
+  min-width: 0;
+  border: none !important;
+  outline: none;
+  background: transparent !important;
+  color: #fff !important;
+  font-size: 13px;
+  height: 100%;
+  box-shadow: none !important;
+}
+
+.input::placeholder,
+.control :global(input)::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.indicators {
+  display: none !important;
+}
+
+.iconTrigger {
+  min-width: 36px;
+  height: 36px;
+  padding: 0;
+  color: #1a1a1a;
+}
+
+@media (min-width: 768px) {
+  .root {
+    width: 220px;
+  }
+
+  .control {
+    height: 40px;
+  }
+}

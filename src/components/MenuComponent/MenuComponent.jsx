@@ -1,11 +1,5 @@
-import {
-  Button,
-  Menu,
-  Portal,
-  Icon,
-  useBreakpointValue,
-} from "@chakra-ui/react";
-import { LuSearch, LuMenu } from "react-icons/lu";
+import { Button, Menu, Portal, Icon } from "@chakra-ui/react";
+import { LuMenu } from "react-icons/lu";
 import { categories } from "../../data/category_data";
 import { UserContext } from "../../pages/home/Home";
 import { useContext } from "react";
@@ -15,49 +9,48 @@ import { allShopProducts } from "../../APIs/getAllProducts/getAllProducts";
 export default function MenuComponent() {
   const { setSearchProduct, page } = useContext(UserContext);
   const renderCategories = ["Show All", ...categories];
-  const isMobile = useBreakpointValue({ base: true, md: false });
 
   async function getProducts(product) {
+    if (page.current !== "Home") {
+      return;
+    }
     if (product === "Show All") {
-      //return all products
       setSearchProduct(await allShopProducts(categories));
     } else {
-      //return selected category
       setSearchProduct(await getCategory(product));
     }
   }
 
   return (
-    <>
-      {page.current === "Home" ? (
-        <Menu.Root>
-          <Menu.Trigger asChild>
-            <Button size="sm" variant="outline">
-              {isMobile ? <Icon as={LuMenu}></Icon> : "Category"}
-            </Button>
-          </Menu.Trigger>
-          <Portal>
-            <Menu.Positioner>
-              <Menu.Content>
-                {renderCategories.map((category, index) => (
-                  <Menu.Item
-                    key={index}
-                    asChild
-                    value={category}
-                    onClick={(e) => getProducts(e.target.innerText)}
-                  >
-                    <p>
-                      {category.slice(0, 1).toUpperCase() + category.slice(1)}
-                    </p>
-                  </Menu.Item>
-                ))}
-              </Menu.Content>
-            </Menu.Positioner>
-          </Portal>
-        </Menu.Root>
-      ) : (
-        <></>
-      )}
-    </>
+    <Menu.Root>
+      <Menu.Trigger asChild>
+        <Button
+          size="sm"
+          variant="ghost"
+          px="1"
+          aria-label="Categories"
+        >
+          <Icon as={LuMenu} boxSize="22px" />
+        </Button>
+      </Menu.Trigger>
+      <Portal>
+        <Menu.Positioner>
+          <Menu.Content>
+            {renderCategories.map((category, index) => (
+              <Menu.Item
+                key={index}
+                asChild
+                value={category}
+                onClick={(e) => getProducts(e.target.innerText)}
+              >
+                <p>
+                  {category.slice(0, 1).toUpperCase() + category.slice(1)}
+                </p>
+              </Menu.Item>
+            ))}
+          </Menu.Content>
+        </Menu.Positioner>
+      </Portal>
+    </Menu.Root>
   );
 }

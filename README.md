@@ -19,6 +19,7 @@ The project demonstrates modern frontend development practices, including compon
 - ✅ Product Catalog
 - ✅ Product Search
 - ✅ Category Filtering
+- ✅ Editorial product cards (hover zoom, staggered catalog enter)
 - ✅ Product Details
 - ✅ Shopping Cart
 - ✅ Quantity Management
@@ -94,6 +95,17 @@ http://localhost:5173
 ### Homepage
 
 <img src="src/assets/Homepage.png" width="70%">
+
+### Product cards
+
+The home grid uses editorial tiles (`src/components/Card/`). See [src/components/Card/README.md](src/components/Card/README.md) for layout and motion details.
+
+- Tall product image, brand/category kicker, clamped title, and price as the call to action
+- The full card links to the product page (no footer button)
+- Hover: image zoom, type color shift, **View →** next to the price
+- Thumbnails fade in when DummyJSON images load
+- Cards stagger in on first load and again after category or search updates
+- `prefers-reduced-motion` turns zoom and stagger off
 
 ### View Product
 

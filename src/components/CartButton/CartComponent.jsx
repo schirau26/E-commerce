@@ -1,21 +1,19 @@
 import { Float, Circle, Box, Icon } from "@chakra-ui/react";
-import { FaCartPlus } from "react-icons/fa";
+import { LuShoppingBag } from "react-icons/lu";
 import { CartContext } from "../../App";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 
 export default function CartComponent() {
   const { cartProducts } = useContext(CartContext);
 
   return (
-    <>
-      <Box position={"relative"}>
-        <FaCartPlus style={{ width: "40px" }} />
-        <Float>
-          <Circle size="5" bg="red" color="white">
-            {cartProducts.length}
-          </Circle>
-        </Float>
-      </Box>
-    </>
+    <Box position="relative" display="flex" alignItems="center">
+      <Icon as={LuShoppingBag} boxSize="22px" />
+      <Float offset="2">
+        <Circle size="4" bg="red" color="white" fontSize="10px">
+          {cartProducts.length}
+        </Circle>
+      </Float>
+    </Box>
   );
 }
