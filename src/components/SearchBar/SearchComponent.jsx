@@ -6,7 +6,6 @@ import {
   useFilter,
   useListCollection,
   useBreakpointValue,
-  createOverlay,
 } from "@chakra-ui/react";
 import { useEffect, useState, useContext } from "react";
 import { LuSearch } from "react-icons/lu";
@@ -17,30 +16,10 @@ import { searchQuery } from "../../APIs/getSearch/getSearchQuery";
 import { useNavigate } from "react-router-dom";
 import css from "./SearchComponent.module.css";
 
-const searchOverlay = createOverlay((props) => {
-  const { content, ...rest } = props;
-  return (
-    <Dialog.Root {...rest}>
-      <Portal>
-        <Dialog.Backdrop bg="blackAlpha.600" />
-        <Dialog.Positioner>
-          <Dialog.Content
-            mx="16px"
-            width="calc(100% - 32px)"
-            maxW="100%"
-            height="auto"
-          >
-            <div className={css.dialogPanel}>{content}</div>
-          </Dialog.Content>
-        </Dialog.Positioner>
-      </Portal>
-    </Dialog.Root>
-  );
-});
-
-export default function SearchComponent({ model = "" }) {
+export default function SearchComponent() {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState("");
+  const [mobileOpen, setMobileOpen] = useState(false);
   const isMobile = useBreakpointValue({ base: true, md: false }) === true;
   const { setSearchProduct, page } = useContext(UserContext);
 
@@ -48,56 +27,74 @@ export default function SearchComponent({ model = "" }) {
     { title: "Loading" },
   ]);
 
-  useEffect(() => {
-    (async () => {
-      const products = await allShopProducts(categories);
-      setStoreProductsAPI(products);
-      set(products);
-    })();
-  }, []);
-
-  async function sendSearchProduct(product) {
-    try {
-      const searchedProducts = await searchQuery(product);
-      if (searchedProducts.length) {
-        setSearchProduct(searchedProducts);
-        searchOverlay.close("search");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  function changeProduct(link) {
-    navigate(`/ViewProduct/${link}`);
-    searchOverlay.close("search");
-  }
-
-  function runSearch(value) {
-    if (!value) {
-      return;
-    }
-    if (page.current === "Home") {
-      sendSearchProduct(value);
-    } else {
-      changeProduct(value);
-    }
-  }
-
   const { contains } = useFilter({ sensitivity: "base" });
 
   const { collection, filter, set } = useListCollection({
     initialItems: storeProductsAPI,
     filter: contains,
     itemToString: (item) => item.title,
-    itemToValue: (item) => item.title,
+    itemToValue: (item) => String(item.id ?? item.title),
   });
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const products = await allShopProducts(categories);
+        setStoreProductsAPI(products);
+        set(products);
+      } catch (error) {
+        console.log(error);
+        setStoreProductsAPI([]);
+        set([]);
+      }
+    })();
+  }, []);
+
+  function closeMobileSearch() {
+    setMobileOpen(false);
+  }
+
+  async function sendSearchProduct(product) {
+    try {
+      const searchedProducts = await searchQuery(product);
+      setSearchProduct(searchedProducts);
+      closeMobileSearch();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function changeProduct(id) {
+    if (!id) {
+      return;
+    }
+    navigate(`/ViewProduct/${id}`);
+    closeMobileSearch();
+  }
+
+  function findItem(value) {
+    return collection.items.find(
+      (item) => String(item.id) === String(value) || item.title === value,
+    );
+  }
+
+  function runSearch(value) {
+    if (!value) {
+      return;
+    }
+    const selected = findItem(value);
+    if (page.current === "Home") {
+      sendSearchProduct(selected?.title ?? value);
+    } else {
+      changeProduct(selected?.id ?? value);
+    }
+  }
 
   const list = (
     <Combobox.Content className={isMobile ? css.inlineList : undefined}>
       <Combobox.Empty>No items found</Combobox.Empty>
       {collection.items.map((item, index) => (
-        <Combobox.Item item={item} key={index}>
+        <Combobox.Item item={item} key={item.id ?? index}>
           {item.title}
           <Combobox.ItemIndicator />
         </Combobox.Item>
@@ -149,15 +146,28 @@ export default function SearchComponent({ model = "" }) {
           size="sm"
           className={css.iconTrigger}
           aria-label="Search"
-          onClick={() =>
-            searchOverlay.open("search", {
-              content: combobox,
-            })
-          }
+          onClick={() => setMobileOpen(true)}
         >
           <LuSearch size={22} />
         </Button>
-        <searchOverlay.Viewport />
+        <Dialog.Root
+          open={mobileOpen}
+          onOpenChange={(e) => setMobileOpen(e.open)}
+        >
+          <Portal>
+            <Dialog.Backdrop bg="blackAlpha.600" />
+            <Dialog.Positioner>
+              <Dialog.Content
+                mx="16px"
+                width="calc(100% - 32px)"
+                maxW="100%"
+                height="auto"
+              >
+                <div className={css.dialogPanel}>{combobox}</div>
+              </Dialog.Content>
+            </Dialog.Positioner>
+          </Portal>
+        </Dialog.Root>
       </>
     );
   }

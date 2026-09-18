@@ -11,8 +11,11 @@ export async function allShopProducts(categories) {
   for (const item of categories) {
     const categoryProducts = await getCategory(item);
 
-    for (const item of categoryProducts) {
-      selectedProducts.push(item);
+    if (!Array.isArray(categoryProducts)) {
+      continue;
+    }
+    for (const product of categoryProducts) {
+      selectedProducts.push(product);
     }
   }
 

@@ -1,8 +1,12 @@
 import { Box, Text, Flex, Button } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
 
-export default function Quantity() {
-  const [quantity, setQuantity] = useState(1);
+export default function Quantity({
+  value = 1,
+  onChange = () => {},
+  min = 1,
+  max = 5,
+}) {
+  const quantity = value;
 
   return (
     <>
@@ -18,13 +22,18 @@ export default function Quantity() {
         >
           <Button
             variant={"ghost"}
-            onClick={() => setQuantity((q) => (q <= 1 ? 1 : q - 1))}
+            onClick={() => onChange(quantity <= min ? min : quantity - 1)}
           >
             -
           </Button>
           <Text>{quantity}</Text>
 
-          <Button variant={"ghost"} onClick={() => setQuantity((q) => q + 1)}>
+          <Button
+            variant={"ghost"}
+            onClick={() =>
+              onChange(quantity >= max ? max : quantity + 1)
+            }
+          >
             +
           </Button>
         </Flex>

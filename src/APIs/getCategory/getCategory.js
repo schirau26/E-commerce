@@ -5,17 +5,18 @@ export async function getCategory(category) {
 
   if (!categories.includes(categoryFormatted)) {
     throw new Error("Enter a valid category");
-    return;
   }
   try {
     const response = await fetch(
       `https://dummyjson.com/products/category/${categoryFormatted}`,
     );
+    if (response.ok === false) {
+      throw new Error("Failed to load category");
+    }
     const responseData = await response.json();
-
-    // returns [{product one},{product two},{product three} , ...]
-    return responseData.products;
+    return Array.isArray(responseData.products) ? responseData.products : [];
   } catch (err) {
     console.error(err, "something went wrong");
+    throw err;
   }
 }

@@ -29,6 +29,7 @@ export default function CartTable() {
           cartProducts.map((item) => {
             return (
               <Card.Root
+                key={item.cartId}
                 flexDirection="row"
                 overflow="hidden"
                 maxW="xl"
@@ -51,6 +52,7 @@ export default function CartTable() {
                           fontSize={{ base: "14px", md: "17px" }}
                         >
                           {item.title}
+                          {item.size ? ` · ${item.size}` : ""}
                         </Card.Title>
                         <Icon
                           as={LuTrash}

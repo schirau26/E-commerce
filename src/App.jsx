@@ -1,51 +1,48 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createContext } from "react";
 import Home from "./pages/home/Home";
-import ProductImage from "./components/ProductImage/ProductImage"; // Testing Component
-import ProductDescription from "./components/ProductPricingDetails/ProductPricingDetails"; //Testing Component
-import ProductDetails from "./components/ProductExtraData/ProductExtraData";
 import ViewProduct from "./pages/ViewProduct/ViewProduct";
 import Checkout from "./pages/checkout_sys/Checkout_sys";
 import LoginSignUp from "./pages/login_signup/login_signup";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 export const CartContext = createContext();
 
-export default function App() {
-  const [cartProducts, setCartProducts] = useState([]); //This is the main storage
-
-  useEffect(() => {
-    const cartData = JSON.parse(sessionStorage.getItem("Cart"));
-    if (cartData) {
-      cartData.length ? setCartProducts(cartData) : null; //update main storage on render only
-    } else {
-      sessionStorage.setItem("Cart", JSON.stringify([])); //Set up DB
+function readCart() {
+  try {
+    const raw = sessionStorage.getItem("Cart");
+    if (!raw) {
+      return [];
     }
-  }, []);
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+export default function App() {
+  const [cartProducts, setCartProducts] = useState(readCart);
+  const skipPersist = useRef(true);
 
   useEffect(() => {
+    if (skipPersist.current) {
+      skipPersist.current = false;
+      return;
+    }
     sessionStorage.setItem("Cart", JSON.stringify(cartProducts));
   }, [cartProducts]);
 
-  //passing item , find index of passed item and replace it in the cart
   function editCart(cartItem) {
-    if (inCart(cartItem.id)) {
-      const newCart = cartProducts.map((c) => {
-        if (c.id === cartItem.id) {
-          c = { ...cartItem };
-        }
-        return c;
-      });
-      console.log(newCart);
-      setCartProducts([...newCart]);
-    }
+    setCartProducts((prev) =>
+      prev.map((c) => (c.cartId === cartItem.cartId ? { ...cartItem } : c)),
+    );
   }
 
   function addCart(item) {
     setCartProducts((i) => [item, ...i]);
   }
 
-  //filter item out from the cart
   function deleteCartItem(id) {
     const newCart = cartProducts.filter((c) => c.cartId !== id);
     setCartProducts(newCart);
@@ -56,30 +53,19 @@ export default function App() {
   }
 
   function getFreeCartId() {
-    //What happens when cart is empty
-    const takenId = [];
-    let freeId = "";
-    for (const item of cartProducts) {
-      takenId.push(item.cartId);
-    }
-    //Loop through all cart IDs to find non-allocated one
+    const takenId = cartProducts.map((item) => item.cartId);
     for (let i = 0; i < 500; i++) {
       if (!takenId.includes(i)) {
-        freeId = i;
-        break;
+        return i;
       }
     }
-
-    return freeId;
+    return Date.now();
   }
 
-  function inCart(id) {
-    for (const item of cartProducts) {
-      if (item.id === id) {
-        return true;
-      }
-    }
-    return false;
+  function inCart(id, size = "") {
+    return cartProducts.some(
+      (item) => item.id === id && (item.size || "") === (size || ""),
+    );
   }
 
   return (

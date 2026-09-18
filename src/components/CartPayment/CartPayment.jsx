@@ -1,20 +1,19 @@
 import {
-  Button,
   Field,
   Fieldset,
-  For,
   Input,
-  NativeSelect,
   Stack,
   HStack,
   RadioGroup,
   Flex,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useContext } from "react";
 import OnlinePayment from "../OnlinePayment/OnlinePayment";
+import { PaymentContext } from "../../pages/checkout_sys/Checkout_sys";
 
 export default function CartPayment() {
-  const [displayBankCard, setDisplayBankCard] = useState(false);
+  const { paymentMethod, setPaymentMethod } = useContext(PaymentContext);
+  const displayBankCard = paymentMethod === "2";
 
   return (
     <>
@@ -60,8 +59,8 @@ export default function CartPayment() {
           <Stack>
             <Fieldset.Legend>Payment Method</Fieldset.Legend>
             <RadioGroup.Root
-              defaultValue="1"
-              onValueChange={() => setDisplayBankCard((t) => (t = !t))}
+              value={paymentMethod}
+              onValueChange={(e) => setPaymentMethod(e.value)}
             >
               <HStack gap="6">
                 {items.map((item) => (

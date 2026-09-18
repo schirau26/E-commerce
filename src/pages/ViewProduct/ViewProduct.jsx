@@ -1,11 +1,12 @@
 import { useState, useEffect, createContext, useRef } from "react";
 import { searchQuery } from "../../APIs/getSearch/getSearchQuery";
+import { getProductById } from "../../APIs/getProduct/getProduct";
 import ProductDescription from "../../components/ProductPricingDetails/ProductPricingDetails";
 import ProductDetails from "../../components/ProductExtraData/ProductExtraData";
 import ProductImage from "../../components/ProductImage/ProductImage";
 import SpinnerComponent from "../../components/Spinner/SpinnerComponent";
 import NavBar from "../../components/NavBar/Navbar";
-import { Flex, Box, useBreakpointValue } from "@chakra-ui/react";
+import { Flex, Box } from "@chakra-ui/react";
 import { UserContext } from "../home/Home";
 import { useParams } from "react-router-dom";
 import FooterComponent from "../../components/FooterComponent/FooterComponent";
@@ -20,15 +21,22 @@ export default function ViewProduct() {
   const { productId } = useParams();
   const page = useRef("View Page");
   const [alert, setAlert] = useState({ bool: false, type: "" });
-  const isMobile = useBreakpointValue({ base: true, md: false });
-
   useEffect(() => {
-    //retrieve the selected product from params
     (async () => {
       try {
-        const [response] = await searchQuery(productId);
+        setAlert({ bool: false, type: "" });
+        setProduct("");
+        let response = null;
+        if (/^\d+$/.test(String(productId))) {
+          response = await getProductById(productId);
+        }
+        if (!response) {
+          const matches = await searchQuery(productId);
+          response = matches[0] || null;
+        }
         if (!response) {
           setAlert({ bool: true, type: "noItem" });
+          return;
         }
         setProduct(response);
       } catch (err) {
@@ -36,7 +44,6 @@ export default function ViewProduct() {
         console.error("Something went wrong", err);
       }
     })();
-    //dependecy catches change in params and changes product change in NAVBAR
   }, [productId]);
 
   return (

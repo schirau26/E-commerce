@@ -6,37 +6,37 @@ import {
   Button,
   Flex,
   Badge,
-  Image,
-  RatingGroup,
 } from "@chakra-ui/react";
-import { useEffect, useState, createContext, useContext } from "react";
+import { useState, createContext, useContext } from "react";
 import { SelectedProduct } from "../../pages/ViewProduct/ViewProduct";
 import { CartContext } from "../../App";
 import SpinnerComponent from "../Spinner/SpinnerComponent";
 import Rating from "../Rating/Rating";
 import ProductSize from "../ProductSize/ProductSize";
+import Quantity from "../Quantity/Quantity";
 
 export const UserProductSize = createContext();
 
 export default function ProductDescription() {
-  //Use create context to provide the details
-  const { cartProducts, addCart, getFreeCartId, inCart } =
-    useContext(CartContext);
+  const { addCart, getFreeCartId, inCart } = useContext(CartContext);
   const { product } = useContext(SelectedProduct);
 
   const [size, setSize] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const maxQuantity = product?.stock > 5 ? 5 : Math.max(1, product?.stock || 1);
+  const alreadyAdded = product ? inCart(product.id, size) : false;
 
-  // enter items into main storage
   function enterToCart() {
     addCart({
-      cartId: cartProducts.length <= 0 ? 0 : getFreeCartId(),
+      cartId: getFreeCartId(),
       id: product.id,
       title: product.title,
       price: product.price,
       thumbnail: product.thumbnail,
-      quantity: 1,
-      cartPrice: product.price,
+      quantity,
+      cartPrice: product.price * quantity,
       stock: product.stock,
+      size,
     });
   }
 
@@ -45,7 +45,6 @@ export default function ProductDescription() {
       <Box
         w={{ base: "100%", md: "50%" }}
         maxW={{ base: "480px" }}
-        // h={{ base: "auto" }}
         p={"20px"}
         rounded={"md"}
         marginTop={{ base: "25px", md: "0px" }}
@@ -71,11 +70,9 @@ export default function ProductDescription() {
               <Text fontSize={{ base: "13px", md: "15px" }}>
                 {product.description}
               </Text>
-              {/* Pricing */}
               <Heading fontSize={{ base: "2xl", md: "3xl" }}>
                 ${product.price}
               </Heading>
-              {/* Rating */}
               <Flex gap={"10px"}>
                 <Rating value={Math.round(product.rating)} />
                 <Text fontSize={"14px"}>{product.rating}</Text>
@@ -83,16 +80,15 @@ export default function ProductDescription() {
               <UserProductSize.Provider value={{ size, setSize }}>
                 <ProductSize />
               </UserProductSize.Provider>
-              {inCart(product.id) ? (
-                <>
-                  <Button onClick={enterToCart} disabled>
-                    Item Added
-                  </Button>
-                </>
+              <Quantity
+                value={quantity}
+                max={maxQuantity}
+                onChange={setQuantity}
+              />
+              {alreadyAdded ? (
+                <Button disabled>Item Added</Button>
               ) : (
-                <>
-                  <Button onClick={enterToCart}>Add to Cart</Button>
-                </>
+                <Button onClick={enterToCart}>Add to Cart</Button>
               )}
             </Stack>
           </>

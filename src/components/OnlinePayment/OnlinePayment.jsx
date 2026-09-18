@@ -10,29 +10,27 @@ import {
   createListCollection,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useContext } from "react";
+import { PaymentContext } from "../../pages/checkout_sys/Checkout_sys";
+
+const month = createListCollection({
+  items: Array.from({ length: 12 }, (_, i) => ({
+    label: String(i + 1),
+    value: String(i + 1),
+  })),
+});
+
+const currentYear = new Date().getFullYear();
+const year = createListCollection({
+  items: Array.from({ length: 10 }, (_, i) => ({
+    label: String(currentYear + i),
+    value: String(currentYear + i),
+  })),
+});
 
 export default function OnlinePayment() {
   const isMobile = useBreakpointValue({ base: true, md: false });
-  const [month, setMonth] = useState();
-  const [year, setYear] = useState();
-
-  useEffect(() => {
-    //Create list collection for month and year values and labels
-    //dynamic list for month and year values and labels
-    let monthList = [];
-    for (let i = 1; i < 13; i++) {
-      monthList.push({ label: `${i}`, value: i });
-    }
-    setMonth(createListCollection({ items: monthList }));
-
-    let yearList = [];
-    const date = new Date().getFullYear();
-    for (let i = date; i < date + 10; i++) {
-      yearList.push({ label: `${i}`, value: i });
-    }
-    setYear(createListCollection({ items: yearList }));
-  }, []);
+  const { cardNumber, setCardNumber } = useContext(PaymentContext);
 
   return (
     <>
@@ -53,12 +51,20 @@ export default function OnlinePayment() {
         <Fieldset.Content>
           <Field.Root>
             <Field.Label>Card Holder's Name</Field.Label>
-            <Input name="name" />
+            <Input name="cardHolder" autoComplete="cc-name" />
           </Field.Root>
 
           <Field.Root>
             <Field.Label>Card Number</Field.Label>
-            <Input name="email" type="email" />
+            <Input
+              name="cardNumber"
+              type="text"
+              inputMode="numeric"
+              autoComplete="cc-number"
+              maxLength={19}
+              value={cardNumber}
+              onChange={(e) => setCardNumber(e.target.value)}
+            />
           </Field.Root>
 
           <HStack>
@@ -77,14 +83,12 @@ export default function OnlinePayment() {
               <Portal>
                 <Select.Positioner>
                   <Select.Content>
-                    {month
-                      ? month.items.map((framework) => (
-                          <Select.Item item={framework} key={framework.value}>
-                            {framework.value}
-                            <Select.ItemIndicator />
-                          </Select.Item>
-                        ))
-                      : null}
+                    {month.items.map((framework) => (
+                      <Select.Item item={framework} key={framework.value}>
+                        {framework.value}
+                        <Select.ItemIndicator />
+                      </Select.Item>
+                    ))}
                   </Select.Content>
                 </Select.Positioner>
               </Portal>
@@ -103,14 +107,12 @@ export default function OnlinePayment() {
               <Portal>
                 <Select.Positioner>
                   <Select.Content>
-                    {year
-                      ? year.items.map((framework) => (
-                          <Select.Item item={framework} key={framework.value}>
-                            {framework.value}
-                            <Select.ItemIndicator />
-                          </Select.Item>
-                        ))
-                      : null}
+                    {year.items.map((framework) => (
+                      <Select.Item item={framework} key={framework.value}>
+                        {framework.value}
+                        <Select.ItemIndicator />
+                      </Select.Item>
+                    ))}
                   </Select.Content>
                 </Select.Positioner>
               </Portal>
@@ -121,8 +123,10 @@ export default function OnlinePayment() {
             <Input
               type="text"
               placeholder="CVV"
-              maxLength={3}
+              maxLength={4}
               name="cvvNumber"
+              inputMode="numeric"
+              autoComplete="cc-csc"
               width={"99px"}
             />
           </HStack>

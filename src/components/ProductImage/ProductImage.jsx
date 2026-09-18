@@ -36,13 +36,13 @@ export default function ProductImage({ productTitle = "" }) {
               render={product.images.map((imageURL, index) => {
                 return (
                   <AspectRatio
+                    key={index}
                     ratio={1 / 1}
                     width={"19%"}
                     h={"auto"}
                     bg={imageURL === selectedImage ? "bg.muted" : "none"}
                   >
                     <Image
-                      key={index}
                       src={imageURL}
                       onClick={() => setSelectedImage(imageURL)}
                     />

@@ -33,7 +33,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (searchProduct) {
+    if (Array.isArray(searchProduct)) {
       setCatalogKey((key) => key + 1);
     }
   }, [searchProduct]);
@@ -51,12 +51,12 @@ export default function Home() {
         wrap={"wrap"}
         justifyContent={"center"}
       >
-        {searchProduct ? (
+        {Array.isArray(searchProduct) ? (
           searchProduct.map((product, index) => {
             return (
               <Display
                 item={product}
-                linkTo={`/ViewProduct/${product.title}`}
+                linkTo={`/ViewProduct/${product.id}`}
                 index={index}
                 key={`${catalogKey}-${product.id}`}
               />
