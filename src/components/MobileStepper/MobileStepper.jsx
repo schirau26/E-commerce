@@ -16,6 +16,12 @@ export default function MobileStepper({ item = {} }) {
   }
 
   return (
-    <Quantity value={current} min={1} max={maxQuantity} onChange={onChange} />
+    <Quantity
+      value={current}
+      min={1}
+      max={maxQuantity}
+      onChange={onChange}
+      variant="compact"
+    />
   );
 }

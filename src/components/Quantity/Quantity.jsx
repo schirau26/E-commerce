@@ -9,11 +9,14 @@ export default function Quantity({
 }) {
   const quantity = value;
   const isPdp = variant === "pdp";
+  const isCompact = variant === "compact";
 
   return (
     <div className={css.wrap}>
-      <span className={css.label}>Quantity</span>
-      <div className={`${css.control} ${isPdp ? css.controlPdp : ""}`}>
+      {isCompact ? null : <span className={css.label}>Quantity</span>}
+      <div
+        className={`${css.control} ${isPdp ? css.controlPdp : ""} ${isCompact ? css.controlCompact : ""}`}
+      >
         <button
           type="button"
           className={css.btn}

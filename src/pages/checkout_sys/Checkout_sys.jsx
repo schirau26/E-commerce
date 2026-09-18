@@ -1,25 +1,33 @@
-import {
-  Button,
-  Steps,
-  Icon,
-  Flex,
-  useBreakpointValue,
-} from "@chakra-ui/react";
-import { createContext, useMemo, useState } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import CartTable from "../../components/CartTable/CartTable";
-import { LuArrowLeft, LuArrowRight, LuHouse } from "react-icons/lu";
-import Receipt from "../../components/CartReceipt/CartReceipt";
+import OrderSummary from "../../components/OrderSummary/OrderSummary";
+import CheckoutAddress from "../../components/CheckoutAddress/CheckoutAddress";
 import CartPayment from "../../components/CartPayment/CartPayment";
 import CompleteCart from "../../components/CompleteCart/CompleteCart";
+import { CartContext } from "../../App";
+import css from "./Checkout_sys.module.css";
 
-export const ReceiptContext = createContext();
 export const PaymentContext = createContext();
 
+const STEPS = ["Cart", "Address", "Payment"];
+
 export default function checkout() {
-  const isMobile = useBreakpointValue({ base: true, md: false });
+  const { cartProducts } = useContext(CartContext);
+  const [step, setStep] = useState(0);
+  const [done, setDone] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("1");
   const [cardNumber, setCardNumber] = useState("");
+  const [address, setAddress] = useState({
+    name: "",
+    email: "",
+    contact: "",
+    address: "",
+  });
+
+  const cartEmpty = !cartProducts?.length;
+  const addressValid =
+    address.name.trim().length > 0 && address.address.trim().length > 0;
 
   const canPlaceOrder = useMemo(() => {
     if (paymentMethod === "1") {
@@ -29,6 +37,43 @@ export default function checkout() {
     return digits.length >= 13;
   }, [paymentMethod, cardNumber]);
 
+  const canContinue =
+    step === 0 ? !cartEmpty : step === 1 ? addressValid : canPlaceOrder;
+
+  function goBack() {
+    setStep((current) => Math.max(0, current - 1));
+    window.scrollTo(0, 0);
+  }
+
+  function goNext() {
+    if (!canContinue) {
+      return;
+    }
+    if (step === 2) {
+      setDone(true);
+      return;
+    }
+    setStep((current) => Math.min(2, current + 1));
+    window.scrollTo(0, 0);
+  }
+
+  if (done) {
+    return (
+      <PaymentContext.Provider
+        value={{
+          paymentMethod,
+          setPaymentMethod,
+          cardNumber,
+          setCardNumber,
+          address,
+          setAddress,
+        }}
+      >
+        <CompleteCart />
+      </PaymentContext.Provider>
+    );
+  }
+
   return (
     <PaymentContext.Provider
       value={{
@@ -36,100 +81,60 @@ export default function checkout() {
         setPaymentMethod,
         cardNumber,
         setCardNumber,
+        address,
+        setAddress,
       }}
     >
-      <Steps.Root
-        defaultStep={0}
-        count={steps.length}
-        width={"100%"}
-        h={"100vh"}
-        m={"0px auto"}
-        paddingTop={"15px"}
-        justifyContent={"space-between"}
-      >
-        <Steps.List paddingRight={"20px"} paddingLeft={"20px"}>
-          {steps.map((step, index) => (
-            <Steps.Item key={index} index={index} title={step.title}>
-              <Steps.Indicator />
-              {isMobile ? <></> : <Steps.Title>{step.title}</Steps.Title>}
-              <Steps.Separator />
-            </Steps.Item>
-          ))}
-        </Steps.List>
-        {steps.map((step, index) => (
-          <Steps.Content
-            key={index}
-            index={index}
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"space-between"}
-            h={"100vh"}
-            overflowY={step.title !== "Payment" ? "scroll" : ""}
+      <div className={css.page}>
+        <header className={css.header}>
+          <Link to="/" className={css.brand}>
+            XENON
+          </Link>
+          <ol className={css.steps} aria-label="Checkout">
+            {STEPS.map((label, index) => (
+              <li
+                key={label}
+                className={`${css.step} ${index === step ? css.stepActive : ""} ${index < step ? css.stepDone : ""}`}
+              >
+                {label}
+              </li>
+            ))}
+          </ol>
+        </header>
+
+        <div className={`${css.layout} ${step === 1 ? css.layoutSingle : ""}`}>
+          <div className={css.main}>
+            {step === 0 ? <CartTable /> : null}
+            {step === 1 ? <CheckoutAddress /> : null}
+            {step === 2 ? <CartPayment /> : null}
+          </div>
+          {step !== 1 ? (
+            <aside className={css.aside}>
+              <OrderSummary />
+            </aside>
+          ) : null}
+        </div>
+
+        <div className={css.nav}>
+          {step === 0 ? (
+            <Link to="/" className={css.ghost}>
+              ← Continue Shopping
+            </Link>
+          ) : (
+            <button type="button" className={css.ghost} onClick={goBack}>
+              ← Back
+            </button>
+          )}
+          <button
+            type="button"
+            className={css.primary}
+            onClick={goNext}
+            disabled={!canContinue}
           >
-            {step.description}
-            <Flex
-              justifyContent={"space-around"}
-              marginTop={"15px"}
-              position="fixed"
-              bottom="0"
-              left="0"
-              w={"100%"}
-              bg={{
-                base: "rgba(255, 255, 255)",
-                md: "rgba(255, 255, 255, 0.6)",
-              }}
-            >
-              {step.title === "Cart" ? (
-                <Link to={"/"}>
-                  <Button variant={"ghost"}>
-                    <Icon as={LuHouse}></Icon>
-                    Home
-                  </Button>
-                </Link>
-              ) : (
-                <Steps.PrevTrigger asChild>
-                  <Button variant={"ghost"}>
-                    <Icon as={LuArrowLeft}></Icon>
-                    Back
-                  </Button>
-                </Steps.PrevTrigger>
-              )}
-              {step.title === "Payment" ? (
-                <Steps.NextTrigger asChild>
-                  <Button variant={"ghost"} disabled={!canPlaceOrder}>
-                    Place order <Icon as={LuArrowRight}></Icon>
-                  </Button>
-                </Steps.NextTrigger>
-              ) : (
-                <Steps.NextTrigger asChild>
-                  <Button variant={"ghost"}>
-                    Continue <Icon as={LuArrowRight}></Icon>
-                  </Button>
-                </Steps.NextTrigger>
-              )}
-            </Flex>
-            {step.extra ? step.extra : ""}
-          </Steps.Content>
-        ))}
-        <Steps.CompletedContent>
-          <CompleteCart />
-        </Steps.CompletedContent>
-      </Steps.Root>
+            {step === 2 ? "Place order" : "Continue"}
+          </button>
+        </div>
+      </div>
     </PaymentContext.Provider>
   );
 }
-
-const steps = [
-  {
-    title: "Cart",
-    description: <CartTable />,
-  },
-  {
-    title: "Receipt",
-    description: <Receipt />,
-  },
-  {
-    title: "Payment",
-    description: <CartPayment />,
-  },
-];

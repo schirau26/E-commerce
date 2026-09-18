@@ -1,0 +1,65 @@
+.card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px 18px 18px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  border-top: 3px solid #111;
+}
+
+.title {
+  margin: 0;
+  font-family: Poppins, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.kicker {
+  margin: 14px 0 10px;
+  font-family: Poppins, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8a8680;
+}
+
+.rows {
+  margin: 0;
+  padding: 0;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  font-family: Poppins, sans-serif;
+  font-size: 13px;
+  color: #5c5853;
+}
+
+.row dd {
+  margin: 0;
+  color: #111;
+}
+
+.discount {
+  color: #8a3b32;
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px solid #ece8e3;
+  font-family: Poppins, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.total strong {
+  font-weight: 600;
+}

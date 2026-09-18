@@ -27,6 +27,15 @@
   box-sizing: border-box;
 }
 
+.controlCompact {
+  justify-content: space-between;
+  width: 96px;
+  height: 36px;
+  border: 1px solid #d0d0d0;
+  padding: 0 6px;
+  box-sizing: border-box;
+}
+
 .btn {
   background: none;
   border: none;

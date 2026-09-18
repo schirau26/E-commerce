@@ -1,97 +1,83 @@
-import {
-  Box,
-  Heading,
-  Card,
-  Image,
-  HStack,
-  Flex,
-  Icon,
-} from "@chakra-ui/react";
-import { LuX, LuDelete, LuTrash } from "react-icons/lu";
-import CartTableHeading from "../CartTableHeading/CartTableHeading";
 import { useContext } from "react";
+import { LuTrash } from "react-icons/lu";
 import MobileStepper from "../MobileStepper/MobileStepper";
 import { CartContext } from "../../App";
+import { cartTotals, formatMoney } from "../../utils/pricing";
+import css from "./CartTable.module.css";
 
 export default function CartTable() {
   const { cartProducts, deleteCartItem } = useContext(CartContext);
+  const items = Array.isArray(cartProducts) ? cartProducts : [];
+  const { quantity } = cartTotals(items);
 
   return (
-    <>
-      <Flex
-        flexDirection={"column"}
-        gap="15px"
-        marginLeft={{ base: "5px", md: "20px" }}
-        marginBottom={{ base: "50px" }}
-      >
-        <Heading>Order Summary</Heading>
-        {cartProducts ? (
-          cartProducts.map((item) => {
+    <section className={css.card}>
+      <div className={css.heading}>
+        <h1 className={css.title}>Shopping Cart</h1>
+        <p className={css.count}>
+          {quantity} {quantity === 1 ? "Item" : "Items"}
+        </p>
+      </div>
+
+      {items.length === 0 ? (
+        <p className={css.empty}>Your bag is empty.</p>
+      ) : (
+        <ul className={css.list}>
+          <li className={css.columns} aria-hidden="true">
+            <span>Product details</span>
+            <span>Price</span>
+            <span>Quantity</span>
+            <span>Total</span>
+          </li>
+          {items.map((item) => {
+            const unitSale = Number(item.price) || 0;
+            const unitList = Number(item.listPrice) || 0;
+            const showList = unitList > unitSale;
             return (
-              <Card.Root
-                key={item.cartId}
-                flexDirection="row"
-                overflow="hidden"
-                maxW="xl"
-                h={"auto"}
-              >
-                <Image
-                  objectFit="fit"
-                  maxW="150px"
-                  w={{ base: "100px", md: "130px" }}
-                  h={{ base: "100px", md: "130px" }}
+              <li key={item.cartId} className={css.row}>
+                <img
+                  className={css.thumb}
                   src={item.thumbnail}
                   alt={item.title}
                 />
-                <Box w={"100%"}>
-                  <Card.Body>
-                    <HStack gap={"20px"}>
-                      <Flex justifyContent={"space-between"} w={"100%"}>
-                        <Card.Title
-                          mb="2"
-                          fontSize={{ base: "14px", md: "17px" }}
-                        >
-                          {item.title}
-                          {item.size ? ` · ${item.size}` : ""}
-                        </Card.Title>
-                        <Icon
-                          as={LuTrash}
-                          size={"md"}
-                          bg={{
-                            base: "colorPalette.100",
-                            _hover: "colorPalette.200",
-                          }}
-                          onClick={() => deleteCartItem(item.cartId)}
-                        ></Icon>
-                      </Flex>
-                    </HStack>
-                    <Card.Description>
-                      ${item.cartPrice.toFixed(2)}
-                      {item.listPrice && item.listPrice > item.price ? (
-                        <span
-                          style={{
-                            marginLeft: "8px",
-                            textDecoration: "line-through",
-                            color: "#8a8680",
-                            fontSize: "12px",
-                          }}
-                        >
-                          ${(item.listPrice * item.quantity).toFixed(2)}
+                <div className={css.details}>
+                  <div className={css.top}>
+                    <div>
+                      <p className={css.name}>{item.title}</p>
+                      {item.size ? (
+                        <p className={css.meta}>Size — {item.size}</p>
+                      ) : null}
+                    </div>
+                    <button
+                      type="button"
+                      className={css.remove}
+                      aria-label={`Remove ${item.title}`}
+                      onClick={() => deleteCartItem(item.cartId)}
+                    >
+                      <LuTrash />
+                    </button>
+                  </div>
+                  <div className={css.bottom}>
+                    <p className={css.price}>
+                      <span>${formatMoney(unitSale)}</span>
+                      {showList ? (
+                        <span className={css.listPrice}>
+                          {" "}
+                          ${formatMoney(unitList)}
                         </span>
                       ) : null}
-                    </Card.Description>
-                    <HStack mt="4">
-                      <MobileStepper item={item} />
-                    </HStack>
-                  </Card.Body>
-                </Box>
-              </Card.Root>
+                    </p>
+                    <MobileStepper item={item} />
+                    <p className={css.lineTotal}>
+                      ${formatMoney(item.cartPrice)}
+                    </p>
+                  </div>
+                </div>
+              </li>
             );
-          })
-        ) : (
-          <p>Loading</p>
-        )}
-      </Flex>
-    </>
+          })}
+        </ul>
+      )}
+    </section>
   );
 }

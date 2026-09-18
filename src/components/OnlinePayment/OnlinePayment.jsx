@@ -1,137 +1,73 @@
-import {
-  Fieldset,
-  Field,
-  Stack,
-  Input,
-  Portal,
-  Select,
-  Text,
-  HStack,
-  createListCollection,
-  useBreakpointValue,
-} from "@chakra-ui/react";
 import { useContext } from "react";
 import { PaymentContext } from "../../pages/checkout_sys/Checkout_sys";
+import css from "./OnlinePayment.module.css";
 
-const month = createListCollection({
-  items: Array.from({ length: 12 }, (_, i) => ({
-    label: String(i + 1),
-    value: String(i + 1),
-  })),
-});
-
+const months = Array.from({ length: 12 }, (_, i) => String(i + 1));
 const currentYear = new Date().getFullYear();
-const year = createListCollection({
-  items: Array.from({ length: 10 }, (_, i) => ({
-    label: String(currentYear + i),
-    value: String(currentYear + i),
-  })),
-});
+const years = Array.from({ length: 10 }, (_, i) => String(currentYear + i));
 
 export default function OnlinePayment() {
-  const isMobile = useBreakpointValue({ base: true, md: false });
   const { cardNumber, setCardNumber } = useContext(PaymentContext);
 
   return (
-    <>
-      <Fieldset.Root
-        size="lg"
-        w="50%"
-        minW="270px"
-        maxW="400px"
-        margin={{ base: "10px 10px 50px", md: "30px 30px" }}
-      >
-        <Stack>
-          <Fieldset.Legend>Card details</Fieldset.Legend>
-          <Fieldset.HelperText>
-            Please provide your card details below.
-          </Fieldset.HelperText>
-        </Stack>
-
-        <Fieldset.Content>
-          <Field.Root>
-            <Field.Label>Card Holder's Name</Field.Label>
-            <Input name="cardHolder" autoComplete="cc-name" />
-          </Field.Root>
-
-          <Field.Root>
-            <Field.Label>Card Number</Field.Label>
-            <Input
-              name="cardNumber"
-              type="text"
-              inputMode="numeric"
-              autoComplete="cc-number"
-              maxLength={19}
-              value={cardNumber}
-              onChange={(e) => setCardNumber(e.target.value)}
-            />
-          </Field.Root>
-
-          <HStack>
-            <Text>Card's Exp</Text>
-            {isMobile ? <br></br> : ""}
-            <Select.Root collection={month} size="sm" width="100px">
-              <Select.HiddenSelect />
-              <Select.Control>
-                <Select.Trigger>
-                  <Select.ValueText placeholder="Month" />
-                </Select.Trigger>
-                <Select.IndicatorGroup>
-                  <Select.Indicator />
-                </Select.IndicatorGroup>
-              </Select.Control>
-              <Portal>
-                <Select.Positioner>
-                  <Select.Content>
-                    {month.items.map((framework) => (
-                      <Select.Item item={framework} key={framework.value}>
-                        {framework.value}
-                        <Select.ItemIndicator />
-                      </Select.Item>
-                    ))}
-                  </Select.Content>
-                </Select.Positioner>
-              </Portal>
-            </Select.Root>
-            {"/"}
-            <Select.Root collection={year} size="sm" width="100px">
-              <Select.HiddenSelect />
-              <Select.Control>
-                <Select.Trigger>
-                  <Select.ValueText placeholder="Year" />
-                </Select.Trigger>
-                <Select.IndicatorGroup>
-                  <Select.Indicator />
-                </Select.IndicatorGroup>
-              </Select.Control>
-              <Portal>
-                <Select.Positioner>
-                  <Select.Content>
-                    {year.items.map((framework) => (
-                      <Select.Item item={framework} key={framework.value}>
-                        {framework.value}
-                        <Select.ItemIndicator />
-                      </Select.Item>
-                    ))}
-                  </Select.Content>
-                </Select.Positioner>
-              </Portal>
-            </Select.Root>
-          </HStack>
-          <HStack>
-            <Text>CVV</Text>
-            <Input
-              type="text"
-              placeholder="CVV"
-              maxLength={4}
-              name="cvvNumber"
-              inputMode="numeric"
-              autoComplete="cc-csc"
-              width={"99px"}
-            />
-          </HStack>
-        </Fieldset.Content>
-      </Fieldset.Root>
-    </>
+    <div className={css.block}>
+      <h2 className={css.legend}>Card details</h2>
+      <p className={css.help}>Enter a card number with at least 13 digits to place the order.</p>
+      <label className={css.field}>
+        Card holder’s name
+        <input name="cardHolder" autoComplete="cc-name" />
+      </label>
+      <label className={css.field}>
+        Card number
+        <input
+          name="cardNumber"
+          type="text"
+          inputMode="numeric"
+          autoComplete="cc-number"
+          maxLength={19}
+          value={cardNumber}
+          onChange={(event) => setCardNumber(event.target.value)}
+        />
+      </label>
+      <div className={css.row}>
+        <label className={css.field}>
+          Month
+          <select name="expMonth" defaultValue="" autoComplete="cc-exp-month">
+            <option value="" disabled>
+              Month
+            </option>
+            {months.map((month) => (
+              <option key={month} value={month}>
+                {month}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className={css.field}>
+          Year
+          <select name="expYear" defaultValue="" autoComplete="cc-exp-year">
+            <option value="" disabled>
+              Year
+            </option>
+            {years.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className={css.field}>
+          CVV
+          <input
+            type="text"
+            name="cvvNumber"
+            placeholder="CVV"
+            maxLength={4}
+            inputMode="numeric"
+            autoComplete="cc-csc"
+          />
+        </label>
+      </div>
+    </div>
   );
 }
