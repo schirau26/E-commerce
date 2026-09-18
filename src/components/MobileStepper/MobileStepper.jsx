@@ -11,7 +11,7 @@ export default function MobileStepper({ item = {} }) {
     editCart({
       ...item,
       quantity,
-      cartPrice: item.price * quantity,
+      cartPrice: Number((item.price * quantity).toFixed(2)),
     });
   }
 

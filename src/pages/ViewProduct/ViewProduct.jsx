@@ -6,12 +6,12 @@ import ProductDetails from "../../components/ProductExtraData/ProductExtraData";
 import ProductImage from "../../components/ProductImage/ProductImage";
 import SpinnerComponent from "../../components/Spinner/SpinnerComponent";
 import NavBar from "../../components/NavBar/Navbar";
-import { Flex, Box } from "@chakra-ui/react";
 import { UserContext } from "../home/Home";
 import { useParams } from "react-router-dom";
 import FooterComponent from "../../components/FooterComponent/FooterComponent";
 import AlertPopUp from "../../components/AlertPopUp/AlertPopUp";
 import ErrorIcon from "../../components/ErrorIcon/ErrorIcon";
+import css from "./ViewProduct.module.css";
 
 export const SelectedProduct = createContext();
 
@@ -48,7 +48,6 @@ export default function ViewProduct() {
 
   return (
     <>
-      {/* The context provides placeholder due to navbar expecting one , but it has not general use */}
       <UserContext.Provider value={{ searchProduct, setSearchProduct, page }}>
         <NavBar />
       </UserContext.Provider>
@@ -56,30 +55,21 @@ export default function ViewProduct() {
       {alert.bool ? <AlertPopUp type={alert.type} /> : null}
 
       {product ? (
-        <>
-          <SelectedProduct.Provider value={{ product: product }}>
-            <Flex
-              marginBottom={{ base: "0px", md: "100px" }}
-              marginTop={{ base: "0px", md: "40px" }}
-              m="auto"
-              direction={{ base: "column", md: "row" }}
-              justifyContent="space-around"
-              align={"center"}
-              w={"100%"}
-              maxW="1200px"
-              p={"10px"}
-            >
-              <ProductImage />
-              <ProductDescription />
-            </Flex>
-            <Box
-              paddingLeft={{ base: "10px", md: "30px" }}
-              marginBottom={"40px"}
-            >
+        <SelectedProduct.Provider value={{ product: product }}>
+          <div className={css.page}>
+            <div className={css.layout}>
+              <div className={css.gallery}>
+                <ProductImage />
+              </div>
+              <div className={css.buy}>
+                <ProductDescription />
+              </div>
+            </div>
+            <div className={css.reviews}>
               <ProductDetails />
-            </Box>
-          </SelectedProduct.Provider>
-        </>
+            </div>
+          </div>
+        </SelectedProduct.Provider>
       ) : alert.bool ? (
         <ErrorIcon type={alert.type} />
       ) : (
@@ -89,6 +79,3 @@ export default function ViewProduct() {
     </>
   );
 }
-
-// You need to add:
-// Color Selection

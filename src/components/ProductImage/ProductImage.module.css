@@ -1,0 +1,166 @@
+.gallery {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.thumbs {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  overflow-x: auto;
+  order: 2;
+  padding-bottom: 4px;
+}
+
+.thumb {
+  flex: 0 0 64px;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  border: 1px solid transparent;
+  background: #f4f2ef;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.thumb:hover img {
+  transform: scale(1.03);
+}
+
+.thumbSelected {
+  border-color: #111;
+}
+
+.hero {
+  position: relative;
+  order: 1;
+  aspect-ratio: 1 / 1;
+  background: #f4f2ef;
+  overflow: hidden;
+}
+
+.heroImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.heroImageVisible {
+  opacity: 1;
+}
+
+.heroButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  color: #111;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+}
+
+.heroButton:active {
+  transform: translateY(-50%) scale(0.96);
+}
+
+.prev {
+  left: 10px;
+}
+
+.next {
+  right: 10px;
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(0, 0, 0, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.lightboxImage {
+  max-width: min(90vw, 900px);
+  max-height: 85vh;
+  object-fit: contain;
+}
+
+.lightboxClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #fff;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.lightbox .heroButton {
+  opacity: 1;
+}
+
+@media (min-width: 768px) {
+  .gallery {
+    grid-template-columns: 72px 1fr;
+    gap: 14px;
+  }
+
+  .thumbs {
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 520px;
+    order: 0;
+  }
+
+  .hero {
+    order: 0;
+  }
+
+  .heroButton {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .gallery:hover .heroButton {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroImage,
+  .thumb img,
+  .heroButton {
+    transition: none;
+  }
+
+  .thumb:hover img {
+    transform: none;
+  }
+}

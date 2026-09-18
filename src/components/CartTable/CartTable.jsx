@@ -67,6 +67,18 @@ export default function CartTable() {
                     </HStack>
                     <Card.Description>
                       ${item.cartPrice.toFixed(2)}
+                      {item.listPrice && item.listPrice > item.price ? (
+                        <span
+                          style={{
+                            marginLeft: "8px",
+                            textDecoration: "line-through",
+                            color: "#8a8680",
+                            fontSize: "12px",
+                          }}
+                        >
+                          ${(item.listPrice * item.quantity).toFixed(2)}
+                        </span>
+                      ) : null}
                     </Card.Description>
                     <HStack mt="4">
                       <MobileStepper item={item} />

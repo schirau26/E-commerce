@@ -1,33 +1,24 @@
-import { Collapsible, Stack, Heading } from "@chakra-ui/react";
+import { Collapsible } from "@chakra-ui/react";
 import { LuChevronRight } from "react-icons/lu";
+import css from "./CollapsibleComponent.module.css";
 
 export default function CollapsibleComponent({
   title = "Title",
   content = "",
 }) {
   return (
-    <>
-      <Collapsible.Root>
-        <Collapsible.Trigger
-          paddingY="3"
-          display="flex"
-          gap="2"
-          alignItems="center"
+    <Collapsible.Root className={css.item}>
+      <Collapsible.Trigger className={css.row}>
+        <span className={css.title}>{title}</span>
+        <Collapsible.Indicator
+          className={css.icon}
+          transition="transform 0.2s"
+          _open={{ transform: "rotate(90deg)" }}
         >
-          <Collapsible.Indicator
-            transition="transform 0.2s"
-            _open={{ transform: "rotate(90deg)" }}
-          >
-            <LuChevronRight />
-          </Collapsible.Indicator>
-          <Heading fontSize={{ base: "15px", md: "18px" }}>{title}</Heading>
-        </Collapsible.Trigger>
-        <Collapsible.Content>
-          <Stack padding="4" borderWidth="1px">
-            {content}
-          </Stack>
-        </Collapsible.Content>
-      </Collapsible.Root>
-    </>
+          <LuChevronRight size={16} />
+        </Collapsible.Indicator>
+      </Collapsible.Trigger>
+      <Collapsible.Content className={css.body}>{content}</Collapsible.Content>
+    </Collapsible.Root>
   );
 }

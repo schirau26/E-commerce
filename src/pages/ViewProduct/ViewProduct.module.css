@@ -1,0 +1,87 @@
+.page {
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto 56px;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.gallery {
+  min-width: 0;
+  animation: galleryEnter 0.5s ease both;
+}
+
+.buy {
+  min-width: 0;
+  animation: buyEnter 0.5s ease 0.1s both;
+}
+
+.reviews {
+  margin-top: 48px;
+  animation: reviewsEnter 0.5s ease 0.18s both;
+}
+
+@keyframes galleryEnter {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes buyEnter {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes reviewsEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding: 0 24px;
+    margin-top: 32px;
+  }
+
+  .layout {
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 48px;
+  }
+
+  .buy {
+    position: sticky;
+    top: 88px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery,
+  .buy,
+  .reviews {
+    animation: none;
+  }
+}

@@ -1,0 +1,55 @@
+.wrap {
+  margin: 0;
+}
+
+.label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: #6b6762;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pill {
+  min-width: 44px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+  color: #111;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.pill:hover {
+  border-color: #111;
+}
+
+.pill:active {
+  transform: scale(0.98);
+}
+
+.selected {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill {
+    transition: none;
+  }
+
+  .pill:active {
+    transform: none;
+  }
+}

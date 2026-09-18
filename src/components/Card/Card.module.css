@@ -80,10 +80,22 @@
 .priceRow {
   display: flex;
   align-items: baseline;
-  gap: 10px;
+  gap: 8px;
   margin-top: 8px;
   font-weight: 500;
   letter-spacing: -0.02em;
+  flex-wrap: wrap;
+}
+
+.sale {
+  color: #111;
+}
+
+.list {
+  font-size: 12px;
+  font-weight: 400;
+  color: #8a8680;
+  text-decoration: line-through;
 }
 
 .viewCue {
