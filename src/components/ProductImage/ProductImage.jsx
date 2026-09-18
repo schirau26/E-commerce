@@ -2,6 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { SelectedProduct } from "../../pages/ViewProduct/ViewProduct";
 import SpinnerComponent from "../Spinner/SpinnerComponent";
+import {
+  PRODUCT_IMAGE_PLACEHOLDER,
+  productImageFallback,
+} from "../../utils/productImage";
 import css from "./ProductImage.module.css";
 
 export default function ProductImage() {
@@ -10,10 +14,18 @@ export default function ProductImage() {
   const [index, setIndex] = useState(0);
   const [visible, setVisible] = useState(true);
   const [lightbox, setLightbox] = useState(false);
+  const [src, setSrc] = useState(PRODUCT_IMAGE_PLACEHOLDER);
+
+  const heroSrc =
+    images[index] || product?.thumbnail || PRODUCT_IMAGE_PLACEHOLDER;
 
   useEffect(() => {
     setIndex(0);
   }, [product?.id]);
+
+  useEffect(() => {
+    setSrc(heroSrc);
+  }, [heroSrc]);
 
   function show(next) {
     if (!images.length) {
@@ -54,7 +66,12 @@ export default function ProductImage() {
     return <SpinnerComponent />;
   }
 
-  const src = images[index] || product.thumbnail;
+  function handleImageError() {
+    const next = productImageFallback(src, product);
+    if (next !== src) {
+      setSrc(next);
+    }
+  }
 
   return (
     <div className={css.gallery}>
@@ -67,7 +84,16 @@ export default function ProductImage() {
             onClick={() => show(i)}
             aria-label={`View image ${i + 1}`}
           >
-            <img src={url} alt="" />
+            <img
+              src={url}
+              alt=""
+              onError={(event) => {
+                const next = productImageFallback(url, product);
+                if (next !== event.currentTarget.src) {
+                  event.currentTarget.src = next;
+                }
+              }}
+            />
           </button>
         ))}
       </div>
@@ -77,6 +103,7 @@ export default function ProductImage() {
           alt={product.title}
           className={`${css.heroImage} ${visible ? css.heroImageVisible : ""}`}
           onClick={() => setLightbox(true)}
+          onError={handleImageError}
         />
         {images.length > 1 ? (
           <>
@@ -119,6 +146,7 @@ export default function ProductImage() {
             alt={product.title}
             className={css.lightboxImage}
             onClick={(e) => e.stopPropagation()}
+            onError={handleImageError}
           />
           {images.length > 1 ? (
             <>

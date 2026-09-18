@@ -1,10 +1,9 @@
 import { LuSearch } from "react-icons/lu";
 import { IoCloudOffline } from "react-icons/io5";
 import { FaDropbox } from "react-icons/fa6";
-import { Box, AbsoluteCenter, VStack, Text } from "@chakra-ui/react";
-import { useRef } from "react";
+import { Box, AbsoluteCenter, VStack, Text, Button } from "@chakra-ui/react";
 
-export default function ErrorIcon({ type = "serverFail" }) {
+export default function ErrorIcon({ type = "serverFail", onRetry }) {
   const error = {
     serverFail: {
       msg: "Internal Server Error",
@@ -15,14 +14,20 @@ export default function ErrorIcon({ type = "serverFail" }) {
       icon: <FaDropbox size={80} />,
     },
   };
+  const display = error[type] || error.serverFail;
 
   return (
     <>
       <Box position="relative" w={"100%"} h={"85vh"}>
         <AbsoluteCenter>
           <VStack colorPalette="teal">
-            {error[type].icon}
-            <Text color="black">{error[type].msg}</Text>
+            {display.icon}
+            <Text color="black">{display.msg}</Text>
+            {onRetry ? (
+              <Button onClick={onRetry} variant="outline">
+                Retry
+              </Button>
+            ) : null}
           </VStack>
         </AbsoluteCenter>
       </Box>

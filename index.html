@@ -11,6 +11,23 @@
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Poppins:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem("theme");
+          if (theme === "dark") {
+            document.documentElement.classList.add("dark");
+          }
+          var path = (location.pathname || "/").replace(/\/+$/, "") || "/";
+          var isLanding = path === "/" || path === "/E-commerce";
+          if (isLanding && theme !== "light") {
+            document.documentElement.setAttribute("data-landing", "");
+          } else {
+            document.documentElement.removeAttribute("data-landing");
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

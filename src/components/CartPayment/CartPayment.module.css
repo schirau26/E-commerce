@@ -1,8 +1,8 @@
 .card {
-  background: #fff;
+  background: var(--surface);
   border-radius: 16px;
   padding: 20px 18px 22px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-card);
 }
 
 .title {
@@ -28,7 +28,7 @@
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #8a8680;
+  color: var(--text-subtle);
 }
 
 .option {

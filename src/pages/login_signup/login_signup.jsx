@@ -1,59 +1,34 @@
-import { Button, Center, Image, Flex, Icon } from "@chakra-ui/react";
 import { useState } from "react";
-import SignUp from "../../components/SignUp/SignUp";
-import Logo from "../../assets/Logo.png";
-import Login from "../../components/Login/Login";
-import { LuHouse } from "react-icons/lu";
 import { Link } from "react-router-dom";
+import SignUp from "../../components/SignUp/SignUp";
+import Login from "../../components/Login/Login";
+import ThemeToggle from "../../components/ThemeToggle/ThemeToggle";
+import css from "./login_signup.module.css";
 
 export default function loginSignUp() {
   const [isUser, setIsUser] = useState(true);
 
   return (
-    <>
-      <Flex
-        h={"100vh"}
-        justifyContent={"space-between"}
-        alignItems={"center"}
-        flexDirection={{ base: "column", md: "row" }}
-      >
-        <Link
-          to={"/"}
-          style={{
-            alignSelf: "flex-start",
-            margin: "0px",
-            position: "absolute",
-          }}
-        >
-          <Button variant={"ghost"}>
-            <Icon as={LuHouse}></Icon>
-            Home
-          </Button>
+    <div className={css.page}>
+      <div className={css.topBar}>
+        <Link to="/" className={css.home}>
+          Home
         </Link>
-        <Center
-          w={"100%"}
-          minW="300px"
-          marginTop={"50px"}
-          marginBottom={"20px"}
-          maxW={"500px"}
-        >
+        <ThemeToggle />
+      </div>
+
+      <div className={css.layout}>
+        <div className={css.form}>
           {isUser ? <Login user={setIsUser} /> : <SignUp user={setIsUser} />}
-        </Center>
-        <Center
-          width={{ base: "100%", md: "55%" }}
-          height={{ base: "40%", md: "100%" }}
-          minH={"200px"}
-          bg={"black"}
-        >
-          <Image
-            src={Logo}
-            bg={"black"}
-            width={{ base: "50%", md: "90%" }}
-            maxW={{ base: "220px", md: "300px" }}
-            minW={"150px"}
-          />
-        </Center>
-      </Flex>
-    </>
+        </div>
+        <div className={css.brand}>
+          <p className={css.kicker}>Xenon Boutique</p>
+          <h1 className={css.wordmark}>XENON</h1>
+          <p className={css.tagline}>
+            Boutique pieces that catch the light after dusk.
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }

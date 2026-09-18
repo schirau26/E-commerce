@@ -1,11 +1,17 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { CartContext } from "../../App";
 import Quantity from "../Quantity/Quantity";
+import { quantityBounds } from "../../utils/inventory";
 
 export default function MobileStepper({ item = {} }) {
-  const { editCart } = useContext(CartContext);
-  const maxQuantity = item.stock > 5 ? 5 : Math.max(1, item.stock || 1);
+  const { editCart, cartProducts } = useContext(CartContext);
+  const reserved = (cartProducts || [])
+    .filter((line) => line.id === item.id && line.cartId !== item.cartId)
+    .reduce((sum, line) => sum + (Number(line.quantity) || 0), 0);
+  const bounds = quantityBounds(item, reserved);
   const current = item.quantity || 1;
+  const min = 1;
+  const max = bounds.canBuy ? bounds.max : 1;
 
   function onChange(quantity) {
     editCart({
@@ -15,11 +21,21 @@ export default function MobileStepper({ item = {} }) {
     });
   }
 
+  useEffect(() => {
+    if (!bounds.canBuy) {
+      return;
+    }
+    const next = Math.min(max, Math.max(min, current));
+    if (next !== current) {
+      onChange(next);
+    }
+  }, [min, max, current, bounds.canBuy]);
+
   return (
     <Quantity
       value={current}
-      min={1}
-      max={maxQuantity}
+      min={min}
+      max={max}
       onChange={onChange}
       variant="compact"
     />

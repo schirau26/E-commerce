@@ -11,6 +11,10 @@ const errors = {
     title: "info",
     value: "You have reached the maximum order quantity (per buyer)",
   },
+  orderFail: {
+    title: "error",
+    value: "Could not save this order in the browser. Your bag is unchanged.",
+  },
 };
 
 export default function AlertPopUp({ type = "serverFail" }) {
@@ -25,8 +29,8 @@ export default function AlertPopUp({ type = "serverFail" }) {
     <Dialog.Root
       open={open}
       onOpenChange={(e) => setOpen(e.open)}
-      closeOnEscape={type === "limitReached"}
-      closeOnInteractOutside={type === "limitReached"}
+      closeOnEscape
+      closeOnInteractOutside
     >
       <Portal>
         <Dialog.Backdrop />
@@ -35,9 +39,7 @@ export default function AlertPopUp({ type = "serverFail" }) {
             <Alert.Root status={error.title} h="100%">
               <Alert.Indicator />
               <Alert.Title>{error.value}</Alert.Title>
-              {type === "limitReached" ? (
-                <Button onClick={() => setOpen(false)}>Close</Button>
-              ) : null}
+              <Button onClick={() => setOpen(false)}>Close</Button>
             </Alert.Root>
           </Dialog.Content>
         </Dialog.Positioner>

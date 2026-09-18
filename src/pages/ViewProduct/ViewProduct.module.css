@@ -15,16 +15,31 @@
 
 .gallery {
   min-width: 0;
+  padding: 16px;
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  box-sizing: border-box;
   animation: galleryEnter 0.5s ease both;
 }
 
 .buy {
   min-width: 0;
+  padding: 20px 16px;
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  box-sizing: border-box;
   animation: buyEnter 0.5s ease 0.1s both;
 }
 
 .reviews {
   margin-top: 48px;
+  padding: 20px 16px;
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  box-sizing: border-box;
   animation: reviewsEnter 0.5s ease 0.18s both;
 }
 
@@ -75,6 +90,12 @@
   .buy {
     position: sticky;
     top: 88px;
+    padding: 24px 20px;
+  }
+
+  .gallery,
+  .reviews {
+    padding: 20px;
   }
 }
 

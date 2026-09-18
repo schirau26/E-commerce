@@ -1,9 +1,9 @@
 .card {
-  background: #fff;
+  background: var(--surface);
   border-radius: 16px;
   padding: 20px 18px 18px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-  border-top: 3px solid #111;
+  box-shadow: var(--shadow-card);
+  border-top: 3px solid var(--accent);
 }
 
 .title {
@@ -21,7 +21,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #8a8680;
+  color: var(--text-subtle);
 }
 
 .rows {
@@ -36,16 +36,16 @@
   padding: 8px 0;
   font-family: Poppins, sans-serif;
   font-size: 13px;
-  color: #5c5853;
+  color: var(--text-muted);
 }
 
 .row dd {
   margin: 0;
-  color: #111;
+  color: var(--text);
 }
 
 .discount {
-  color: #8a3b32;
+  color: var(--discount);
 }
 
 .total {
@@ -54,7 +54,7 @@
   align-items: baseline;
   margin-top: 10px;
   padding-top: 12px;
-  border-top: 1px solid #ece8e3;
+  border-top: 1px solid var(--border-soft);
   font-family: Poppins, sans-serif;
   font-size: 15px;
   font-weight: 600;

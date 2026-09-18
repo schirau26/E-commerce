@@ -19,7 +19,7 @@
   height: 64px;
   padding: 0;
   border: 1px solid transparent;
-  background: #f4f2ef;
+  background: var(--card-well);
   cursor: pointer;
   overflow: hidden;
 }
@@ -37,14 +37,14 @@
 }
 
 .thumbSelected {
-  border-color: #111;
+  border-color: var(--text);
 }
 
 .hero {
   position: relative;
   order: 1;
   aspect-ratio: 1 / 1;
-  background: #f4f2ef;
+  background: var(--card-well);
   overflow: hidden;
 }
 
@@ -69,10 +69,10 @@
   height: 36px;
   border: none;
   border-radius: 50%;
-  background: #fff;
-  color: #111;
+  background: var(--surface);
+  color: var(--text);
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -112,7 +112,7 @@
   position: absolute;
   top: 16px;
   right: 16px;
-  background: #fff;
+  background: var(--surface);
   border: none;
   width: 36px;
   height: 36px;

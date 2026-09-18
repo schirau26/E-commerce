@@ -4,13 +4,23 @@
   width: 46%;
   max-width: 180px;
   min-width: 140px;
+  padding: 8px 8px 14px;
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  box-sizing: border-box;
   text-decoration: none;
   color: inherit;
   animation: cardEnter 0.5s ease both;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .card:hover {
   text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
 }
 
 @media (min-width: 768px) {
@@ -22,9 +32,40 @@
 }
 
 .imageWrap {
+  position: relative;
   aspect-ratio: 3 / 4;
   overflow: hidden;
-  background: #f4f2ef;
+  background: var(--card-well);
+  border-radius: 10px;
+}
+
+.newBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 1;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 6px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.tag {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+  border: 1px solid var(--border-soft);
+  padding: 2px 6px;
 }
 
 .image {
@@ -40,6 +81,11 @@
 
 .imageLoaded {
   opacity: 1;
+  mix-blend-mode: multiply;
+}
+
+:global(html.dark) .imageLoaded {
+  mix-blend-mode: normal;
 }
 
 .card:hover .image.imageLoaded {
@@ -47,14 +93,14 @@
 }
 
 .body {
-  padding: 12px 2px 0;
+  padding: 12px 6px 0;
 }
 
 .kicker {
   font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #8a8680;
+  color: var(--text-subtle);
   margin-bottom: 4px;
   transition: color 0.25s ease;
 }
@@ -67,7 +113,7 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  color: #6b6762;
+  color: var(--text-muted);
   transition: color 0.25s ease;
 }
 
@@ -88,13 +134,13 @@
 }
 
 .sale {
-  color: #111;
+  color: var(--text);
 }
 
 .list {
   font-size: 12px;
   font-weight: 400;
-  color: #8a8680;
+  color: var(--text-subtle);
   text-decoration: line-through;
 }
 
@@ -103,7 +149,7 @@
   transform: translateX(-4px);
   font-size: 12px;
   font-weight: 400;
-  color: #6b6762;
+  color: var(--text-muted);
   transition:
     opacity 0.25s ease,
     transform 0.25s ease;
@@ -111,7 +157,7 @@
 
 .card:hover .kicker,
 .card:hover .title {
-  color: #2c2c2c;
+  color: var(--text);
 }
 
 .card:hover .viewCue {
@@ -133,6 +179,11 @@
 @media (prefers-reduced-motion: reduce) {
   .card {
     animation: none;
+    transition: none;
+  }
+
+  .card:hover {
+    transform: none;
   }
 
   .image,

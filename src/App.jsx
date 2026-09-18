@@ -4,7 +4,14 @@ import Home from "./pages/home/Home";
 import ViewProduct from "./pages/ViewProduct/ViewProduct";
 import Checkout from "./pages/checkout_sys/Checkout_sys";
 import LoginSignUp from "./pages/login_signup/login_signup";
-import { Route, Routes } from "react-router-dom";
+import Admin from "./pages/admin/Admin";
+import Landing from "./pages/landing/Landing";
+import RequireAuth from "./components/RequireAuth/RequireAuth";
+import Starfield from "./components/Starfield/Starfield";
+import { useAuth } from "./context/AuthContext";
+import { useColorMode } from "./src/components/ui/color-mode";
+import { isLandingMidnight, useStoredTheme } from "./utils/theme";
+import { Route, Routes, useLocation } from "react-router-dom";
 
 export const CartContext = createContext();
 
@@ -22,8 +29,21 @@ function readCart() {
 }
 
 export default function App() {
+  const { canCart } = useAuth();
+  const { colorMode } = useColorMode();
+  const storedTheme = useStoredTheme();
+  const { pathname } = useLocation();
+  const onLanding = pathname === "/";
   const [cartProducts, setCartProducts] = useState(readCart);
   const skipPersist = useRef(true);
+
+  useEffect(() => {
+    if (onLanding && isLandingMidnight(colorMode, storedTheme)) {
+      document.documentElement.setAttribute("data-landing", "");
+    } else {
+      document.documentElement.removeAttribute("data-landing");
+    }
+  }, [onLanding, colorMode, storedTheme]);
 
   useEffect(() => {
     if (skipPersist.current) {
@@ -40,6 +60,9 @@ export default function App() {
   }
 
   function addCart(item) {
+    if (!canCart) {
+      return;
+    }
     setCartProducts((i) => [item, ...i]);
   }
 
@@ -70,6 +93,7 @@ export default function App() {
 
   return (
     <>
+      <Starfield />
       <CartContext.Provider
         value={{
           cartProducts,
@@ -79,13 +103,37 @@ export default function App() {
           inCart,
           editCart,
           clearCart,
+          replaceCart: setCartProducts,
         }}
       >
         <Routes>
+          <Route path="/" element={<Landing />} />
           <Route path="/login_signup" element={<LoginSignUp />} />
-          <Route path="/Checkout" element={<Checkout />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/ViewProduct/:productId" element={<ViewProduct />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route
+            path="/shop"
+            element={
+              <RequireAuth>
+                <Home />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/ViewProduct/:productId"
+            element={
+              <RequireAuth>
+                <ViewProduct />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/Checkout"
+            element={
+              <RequireAuth cartOnly>
+                <Checkout />
+              </RequireAuth>
+            }
+          />
         </Routes>
       </CartContext.Provider>
     </>

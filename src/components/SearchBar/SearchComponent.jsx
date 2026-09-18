@@ -10,9 +10,10 @@ import {
 import { useEffect, useState, useContext } from "react";
 import { LuSearch } from "react-icons/lu";
 import { allShopProducts } from "../../APIs/getAllProducts/getAllProducts";
-import { categories } from "../../data/category_data";
 import { UserContext } from "../../pages/home/Home";
 import { searchQuery } from "../../APIs/getSearch/getSearchQuery";
+import { HOME_PRODUCT_SELECT } from "../../utils/catalogSettings";
+import { useCatalog } from "../../context/CatalogContext";
 import { useNavigate } from "react-router-dom";
 import css from "./SearchComponent.module.css";
 
@@ -21,7 +22,8 @@ export default function SearchComponent() {
   const [inputValue, setInputValue] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
   const isMobile = useBreakpointValue({ base: true, md: false }) === true;
-  const { setSearchProduct, page } = useContext(UserContext);
+  const { setSearchProduct, page, setAlert } = useContext(UserContext);
+  const { settings, withStock, catalogTick, logEvent } = useCatalog();
 
   const [storeProductsAPI, setStoreProductsAPI] = useState([
     { title: "Loading" },
@@ -39,16 +41,19 @@ export default function SearchComponent() {
   useEffect(() => {
     (async () => {
       try {
-        const products = await allShopProducts(categories);
-        setStoreProductsAPI(products);
-        set(products);
+        const products = await allShopProducts(settings.enabledCategories, {
+          select: HOME_PRODUCT_SELECT,
+        });
+        const mapped = products.map(withStock);
+        setStoreProductsAPI(mapped);
+        set(mapped);
       } catch (error) {
         console.log(error);
         setStoreProductsAPI([]);
         set([]);
       }
     })();
-  }, []);
+  }, [settings.enabledCategories, catalogTick, withStock]);
 
   function closeMobileSearch() {
     setMobileOpen(false);
@@ -56,11 +61,16 @@ export default function SearchComponent() {
 
   async function sendSearchProduct(product) {
     try {
-      const searchedProducts = await searchQuery(product);
-      setSearchProduct(searchedProducts);
+      const searchedProducts = await searchQuery(
+        product,
+        settings.enabledCategories,
+      );
+      setSearchProduct(searchedProducts.map(withStock));
       closeMobileSearch();
     } catch (error) {
       console.log(error);
+      setAlert?.({ bool: true, type: "serverFail" });
+      logEvent({ type: "search_fail", message: "Product search failed" });
     }
   }
 

@@ -111,7 +111,7 @@
     117px 25px 1px rgba(255, 255, 255, 0.57),
     116px 260px 1px rgba(255, 255, 255, 0.29),
     140px 304px 1px rgba(255, 255, 255, 0.29);
-  animation: twinkle 6s ease-in-out infinite alternate;
+  animation: twinkle 6.4s ease-in-out infinite;
 }
 
 .stars::after {
@@ -178,11 +178,18 @@
 }
 
 @keyframes twinkle {
-  from {
-    opacity: 0.45;
+  0%,
+  100% {
+    opacity: 0.35;
   }
-  to {
+  40% {
     opacity: 1;
+  }
+  62% {
+    opacity: 0.55;
+  }
+  78% {
+    opacity: 0.92;
   }
 }
 

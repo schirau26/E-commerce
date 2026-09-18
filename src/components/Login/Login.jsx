@@ -9,11 +9,15 @@ import {
 } from "@chakra-ui/react";
 import { PasswordInput } from "../../src/components/ui/password-input";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
+import { safeReturnPath, useAuth } from "../../context/AuthContext";
 
 export default function Login({ user = () => {} }) {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { loginUser, enterAsGuest } = useAuth();
+  const next = safeReturnPath(searchParams.get("next"));
   const [submitError, setSubmitError] = useState("");
   const {
     register,
@@ -37,8 +41,8 @@ export default function Login({ user = () => {} }) {
       if (!response.ok) {
         throw new Error(result.message || "Login failed");
       }
-      sessionStorage.setItem("Auth", JSON.stringify(result));
-      navigate("/");
+      loginUser(result);
+      navigate(next);
     } catch (error) {
       setSubmitError(error.message || "Login failed");
     }
@@ -71,14 +75,24 @@ export default function Login({ user = () => {} }) {
           </Text>
         ) : null}
 
-        <HStack gap={"30px"}>
+        <HStack gap={"16px"}>
           <Button type="submit" loading={isSubmitting}>
             Login
           </Button>
-          <Button type="button" variant="outline" onClick={() => navigate("/")}>
-            Guest
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              enterAsGuest();
+              navigate("/shop");
+            }}
+          >
+            Continue as guest
           </Button>
         </HStack>
+        <Text fontSize="13px" color="gray.600">
+          Guests can browse the boutique. Sign in to use the bag.
+        </Text>
 
         <Text fontSize={"14px"}>
           Create an account{" "}

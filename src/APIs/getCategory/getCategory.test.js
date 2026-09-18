@@ -20,6 +20,7 @@ describe("Get Category", () => {
     "Testing against all category items",
     async (input, expected) => {
       global.fetch.mockResolvedValueOnce({
+        ok: true,
         json: async () => ({
           products: [`Objects of ${input} category`],
           total: "20",
@@ -32,6 +33,7 @@ describe("Get Category", () => {
 
   it("Testing for Capitalised Parameter", async () => {
     global.fetch.mockResolvedValueOnce({
+      ok: true,
       json: async () => ({
         products: [`Objects of products category`],
         total: "20",

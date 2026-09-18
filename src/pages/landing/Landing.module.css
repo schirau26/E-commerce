@@ -1,0 +1,173 @@
+.page {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  background: var(--page);
+  color: var(--text);
+}
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 20px 0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand,
+.account {
+  font-family: Poppins, sans-serif;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.brand {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+}
+
+.account {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.82;
+}
+
+.account:hover {
+  opacity: 1;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px 20px 40px;
+}
+
+.kicker {
+  margin: 0;
+  font-family: Poppins, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--kicker);
+}
+
+.title {
+  margin: 12px 0 0;
+  font-family: Cinzel, serif;
+  font-size: clamp(36px, 11vw, 92px);
+  font-weight: 700;
+  letter-spacing: 0.36em;
+  text-indent: 0.36em;
+  line-height: 1;
+  color: var(--text);
+  text-shadow: var(--wordmark-glow);
+}
+
+.tagline {
+  margin: 18px 0 0;
+  max-width: 360px;
+  font-family: Poppins, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.copy {
+  margin: 16px 0 0;
+  max-width: 420px;
+  font-family: Poppins, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.6;
+  color: var(--text-subtle);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+  min-height: 48px;
+  padding: 0 28px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-family: Poppins, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.cta:hover {
+  box-shadow: var(--cta-glow);
+  transform: translateY(-1px);
+}
+
+@media (min-width: 768px) {
+  .header {
+    padding: 28px 40px 0;
+  }
+
+  .brand {
+    font-size: 16px;
+    letter-spacing: 0.32em;
+  }
+
+  .content {
+    padding: 56px 40px 96px;
+  }
+
+  .title {
+    letter-spacing: 0.42em;
+    text-indent: 0.42em;
+  }
+
+  .cta {
+    margin-top: 36px;
+  }
+
+  .tagline {
+    font-size: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta {
+    transition: none;
+  }
+
+  .cta:hover {
+    transform: none;
+  }
+}

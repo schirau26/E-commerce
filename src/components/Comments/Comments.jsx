@@ -106,6 +106,11 @@ export default function Comments() {
                   <span className={css.date}>{formatDate(comment.date)}</span>
                   <Rating size="xs" value={comment.rating} />
                 </div>
+                {comment.reviewerEmail ? (
+                  <p className={css.verified}>
+                    Verified buyer · {comment.reviewerEmail}
+                  </p>
+                ) : null}
                 <p className={css.comment}>{comment.comment}</p>
               </div>
             </article>

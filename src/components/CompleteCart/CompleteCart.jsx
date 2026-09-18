@@ -9,7 +9,7 @@ export default function CompleteCart() {
 
   function cartReset() {
     clearCart();
-    navigate("/");
+    navigate("/shop");
   }
 
   return (

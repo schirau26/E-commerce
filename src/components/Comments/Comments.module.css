@@ -10,7 +10,7 @@
   gap: 16px;
   margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 1px solid #e6e3de;
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .heading {
@@ -35,7 +35,7 @@
 
 .count {
   font-size: 13px;
-  color: #8a8680;
+  color: var(--text-subtle);
 }
 
 .sort {
@@ -44,18 +44,18 @@
 }
 
 .sort button {
-  border: 1px solid #d0d0d0;
-  background: #fff;
+  border: 1px solid var(--border);
+  background: var(--surface);
   padding: 6px 12px;
   font-size: 12px;
   cursor: pointer;
-  color: #6b6762;
+  color: var(--text-muted);
 }
 
 .sort button[aria-pressed="true"] {
-  border-color: #111;
-  color: #111;
-  background: #f4f2ef;
+  border-color: var(--text);
+  color: var(--text);
+  background: var(--surface-muted);
 }
 
 .list {
@@ -68,7 +68,7 @@
   grid-template-columns: 40px 1fr;
   gap: 12px;
   padding: 16px 0;
-  border-bottom: 1px solid #e6e3de;
+  border-bottom: 1px solid var(--border-soft);
   animation: reviewIn 0.45s ease both;
 }
 
@@ -76,8 +76,8 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #111;
-  color: #fff;
+  background: var(--accent);
+  color: var(--accent-text);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -96,24 +96,30 @@
 .name {
   font-size: 14px;
   font-weight: 500;
-  color: #111;
+  color: var(--text);
+}
+
+.verified {
+  margin: 0 0 4px;
+  font-size: 11px;
+  color: var(--text-subtle);
 }
 
 .date {
   font-size: 12px;
-  color: #8a8680;
+  color: var(--text-subtle);
 }
 
 .comment {
   margin: 8px 0 0;
   font-size: 14px;
   line-height: 1.5;
-  color: #444;
+  color: var(--text-muted);
 }
 
 .empty {
   font-size: 14px;
-  color: #8a8680;
+  color: var(--text-subtle);
 }
 
 @keyframes reviewIn {

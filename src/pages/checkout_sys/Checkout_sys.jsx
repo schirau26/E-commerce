@@ -1,11 +1,14 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import CartTable from "../../components/CartTable/CartTable";
 import OrderSummary from "../../components/OrderSummary/OrderSummary";
 import CheckoutAddress from "../../components/CheckoutAddress/CheckoutAddress";
 import CartPayment from "../../components/CartPayment/CartPayment";
 import CompleteCart from "../../components/CompleteCart/CompleteCart";
+import AlertPopUp from "../../components/AlertPopUp/AlertPopUp";
 import { CartContext } from "../../App";
+import { useCatalog } from "../../context/CatalogContext";
+import { clampCartItems } from "../../utils/inventory";
 import css from "./Checkout_sys.module.css";
 
 export const PaymentContext = createContext();
@@ -13,9 +16,11 @@ export const PaymentContext = createContext();
 const STEPS = ["Cart", "Address", "Payment"];
 
 export default function checkout() {
-  const { cartProducts } = useContext(CartContext);
+  const { cartProducts, clearCart, replaceCart } = useContext(CartContext);
+  const { placeOrder, logEvent } = useCatalog();
   const [step, setStep] = useState(0);
   const [done, setDone] = useState(false);
+  const [alert, setAlert] = useState({ bool: false, type: "" });
   const [paymentMethod, setPaymentMethod] = useState("1");
   const [cardNumber, setCardNumber] = useState("");
   const [address, setAddress] = useState({
@@ -24,6 +29,23 @@ export default function checkout() {
     contact: "",
     address: "",
   });
+  const clampedOnce = useRef(false);
+
+  useEffect(() => {
+    if (clampedOnce.current) {
+      return;
+    }
+    clampedOnce.current = true;
+    const { items, changed } = clampCartItems(cartProducts);
+    if (changed) {
+      replaceCart(items);
+      setAlert({ bool: true, type: "limitReached" });
+      logEvent({
+        type: "cart_clamped",
+        message: "Cart quantities were reduced to the per-product limit",
+      });
+    }
+  }, [cartProducts, replaceCart, logEvent]);
 
   const cartEmpty = !cartProducts?.length;
   const addressValid =
@@ -50,6 +72,26 @@ export default function checkout() {
       return;
     }
     if (step === 2) {
+      const { items, changed } = clampCartItems(cartProducts);
+      if (changed) {
+        replaceCart(items);
+        setAlert({ bool: true, type: "limitReached" });
+        logEvent({
+          type: "cart_clamped",
+          message: "Cart quantities were reduced to the per-product limit",
+        });
+        return;
+      }
+      const result = placeOrder({
+        items: cartProducts,
+        address,
+        paymentMethod: paymentMethod === "1" ? "COD" : "Card",
+      });
+      if (!result?.ok) {
+        setAlert({ bool: true, type: "orderFail" });
+        return;
+      }
+      clearCart();
       setDone(true);
       return;
     }
@@ -85,6 +127,7 @@ export default function checkout() {
         setAddress,
       }}
     >
+      {alert.bool ? <AlertPopUp type={alert.type} /> : null}
       <div className={css.page}>
         <header className={css.header}>
           <Link to="/" className={css.brand}>
@@ -117,7 +160,7 @@ export default function checkout() {
 
         <div className={css.nav}>
           {step === 0 ? (
-            <Link to="/" className={css.ghost}>
+            <Link to="/shop" className={css.ghost}>
               ← Continue Shopping
             </Link>
           ) : (

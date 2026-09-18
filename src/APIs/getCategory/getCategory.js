@@ -1,15 +1,20 @@
-import { categories } from "../../data/category_data.js";
+import { categories as boutiqueCategories } from "../../data/category_data.js";
 
-export async function getCategory(category) {
-  const categoryFormatted = category.toLowerCase();
-
-  if (!categories.includes(categoryFormatted)) {
+export async function getCategory(category, options = {}) {
+  if (!category || !String(category).trim()) {
     throw new Error("Enter a valid category");
   }
+
+  const categoryFormatted = String(category).toLowerCase();
+  const params = new URLSearchParams();
+  if (options.select) {
+    params.set("select", options.select);
+  }
+  const query = params.toString();
+  const url = `https://dummyjson.com/products/category/${categoryFormatted}${query ? `?${query}` : ""}`;
+
   try {
-    const response = await fetch(
-      `https://dummyjson.com/products/category/${categoryFormatted}`,
-    );
+    const response = await fetch(url);
     if (response.ok === false) {
       throw new Error("Failed to load category");
     }
@@ -20,3 +25,5 @@ export async function getCategory(category) {
     throw err;
   }
 }
+
+export { boutiqueCategories };

@@ -3,17 +3,17 @@
   display: grid;
   place-items: center;
   padding: 24px;
-  background: #f6f4f1;
+  background: var(--page);
   box-sizing: border-box;
 }
 
 .card {
   width: min(440px, 100%);
-  background: #fff;
+  background: var(--surface);
   border-radius: 16px;
   padding: 36px 28px;
   text-align: center;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-card);
 }
 
 .brand {
@@ -35,14 +35,14 @@
   margin: 0 0 24px;
   font-family: Poppins, sans-serif;
   font-size: 14px;
-  color: #5c5853;
+  color: var(--text-muted);
   line-height: 1.5;
 }
 
 .button {
   border: none;
-  background: #111;
-  color: #f6f1e4;
+  background: var(--accent);
+  color: var(--accent-text);
   padding: 12px 28px;
   font-family: Poppins, sans-serif;
   font-size: 13px;

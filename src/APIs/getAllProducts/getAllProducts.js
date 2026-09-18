@@ -1,25 +1,30 @@
 import { getCategory } from "../getCategory/getCategory.js";
 
-//categories to get
-
-export async function allShopProducts(categories) {
-  if (!categories) {
+export async function allShopProducts(categoryList, options = {}) {
+  if (!categoryList) {
     throw new Error("Invalid parameter `categories`");
   }
-  const selectedProducts = [];
 
-  for (const item of categories) {
-    const categoryProducts = await getCategory(item);
+  const results = await Promise.all(
+    categoryList.map(async (item) => {
+      try {
+        const categoryProducts = await getCategory(item, options);
+        return {
+          ok: true,
+          products: Array.isArray(categoryProducts) ? categoryProducts : [],
+        };
+      } catch {
+        return { ok: false, products: [] };
+      }
+    }),
+  );
 
-    if (!Array.isArray(categoryProducts)) {
-      continue;
-    }
-    for (const product of categoryProducts) {
-      selectedProducts.push(product);
-    }
+  if (
+    categoryList.length > 0 &&
+    results.every((result) => result.ok === false)
+  ) {
+    throw new Error("Failed to load catalog");
   }
 
-  // returns [{product one},{product two},{product three} ,{product one},{product two},{product three}]
-
-  return selectedProducts;
+  return results.flatMap((result) => result.products);
 }

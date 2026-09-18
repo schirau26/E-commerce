@@ -2,8 +2,8 @@
   height: 100dvh;
   display: flex;
   flex-direction: column;
-  background: #f6f4f1;
-  color: #111;
+  background: var(--page);
+  color: var(--text);
   padding: 16px 16px 12px;
   box-sizing: border-box;
   overflow: hidden;
@@ -26,7 +26,7 @@
   font-weight: 700;
   letter-spacing: 0.36em;
   text-indent: 0.36em;
-  color: #111;
+  color: var(--text);
   text-decoration: none;
 }
 
@@ -41,7 +41,7 @@
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #8a8680;
+  color: var(--text-subtle);
 }
 
 .step {
@@ -55,15 +55,15 @@
   top: 50%;
   width: 10px;
   height: 1px;
-  background: #cfc9c2;
+  background: var(--border);
 }
 
 .stepActive {
-  color: #111;
+  color: var(--text);
 }
 
 .stepDone {
-  color: #5c5853;
+  color: var(--text-muted);
 }
 
 .layout {
@@ -103,7 +103,7 @@
   margin: 12px auto 0;
   padding-top: 8px;
   flex-shrink: 0;
-  background: #f6f4f1;
+  background: var(--bg);
 }
 
 .ghost,
@@ -115,7 +115,7 @@
 }
 
 .ghost {
-  color: #111;
+  color: var(--text);
   background: none;
   border: none;
   text-decoration: none;
@@ -124,8 +124,8 @@
 
 .primary {
   border: none;
-  background: #111;
-  color: #f6f1e4;
+  background: var(--accent);
+  color: var(--accent-text);
   padding: 12px 22px;
   letter-spacing: 0.08em;
   text-transform: uppercase;

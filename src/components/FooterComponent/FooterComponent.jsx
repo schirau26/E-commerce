@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
 import { FaInstagram, FaFacebookF, FaPinterestP } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
+import { useAuth } from "../../context/AuthContext";
 import css from "./FooterComponent.module.css";
 
 export default function FooterComponent() {
+  const { canCart } = useAuth();
+
   return (
     <footer className={css.footer}>
       <div className={css.stars} aria-hidden="true" />
@@ -34,8 +37,10 @@ export default function FooterComponent() {
           <div className={css.column}>
             <h2 className={css.heading}>Shop</h2>
             <Link to="/">Home</Link>
-            <Link to="/Checkout">Cart</Link>
+            <Link to="/shop">Shop</Link>
+            {canCart ? <Link to="/Checkout">Cart</Link> : null}
             <Link to="/login_signup">Account</Link>
+            <Link to="/admin">Admin</Link>
           </div>
           <div className={css.column}>
             <h2 className={css.heading}>Help</h2>
