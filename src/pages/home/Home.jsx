@@ -164,6 +164,7 @@ export default function Home() {
       {filtersOpen ? (
         <div
           className={css.overlay}
+          data-overlay=""
           onClick={() => setFiltersOpen(false)}
           role="presentation"
         >

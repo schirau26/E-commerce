@@ -61,7 +61,7 @@ body,
   color: var(--text);
 }
 
-#root > *:not([aria-hidden="true"]) {
+#root > *:not([aria-hidden="true"]):not([data-overlay]) {
   position: relative;
   z-index: 1;
 }
